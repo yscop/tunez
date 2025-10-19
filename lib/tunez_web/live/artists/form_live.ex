@@ -4,7 +4,6 @@ defmodule TunezWeb.Artists.FormLive do
   def mount(%{"id" => artist_id}, _session, socket) do
     artist = Tunez.Music.get_artist_by_id!(artist_id)
     form = Tunez.Music.form_to_update_artist(artist)
-    
 
     socket =
       socket
@@ -55,6 +54,7 @@ defmodule TunezWeb.Artists.FormLive do
       update(socket, :form, fn form ->
         AshPhoenix.Form.validate(form, form_data)
       end)
+
     {:noreply, socket}
   end
 
@@ -73,6 +73,7 @@ defmodule TunezWeb.Artists.FormLive do
           socket
           |> put_flash(:info, "Artist sved successfully.")
           |> assign(:form, to_form(form))
+
         {:noreply, socket}
     end
   end
