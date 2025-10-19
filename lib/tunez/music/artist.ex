@@ -3,7 +3,11 @@ defmodule Tunez.Music.Artist do
     otp_app: :tunez,
     domain: Tunez.Music,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshJsonApi.Resource]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
+
+  graphql do
+    type :artist
+  end
 
   json_api do
     type "artist"
@@ -20,6 +24,35 @@ defmodule Tunez.Music.Artist do
     end
   end
 
+  actions do
+    create :create do
+      accept [:name, :biography]
+    end
+
+    read :read do
+      primary? true
+    end
+
+    update :update do
+      require_atomic? false
+      accept [:name, :biography]
+
+      change Tunez.Music.Changes.UpdatePreviousNames, where: [changing(:name)]
+    end
+
+    destroy :destroy do
+    end
+
+    read :search do
+      argument :query, :ci_string do
+        constraints allow_empty?: true
+        default ""
+      end
+
+      filter expr(contains(name, ^arg(:query)))
+      pagination offset?: true, default_limit: 8
+    end
+  end
 
   attributes do
     uuid_primary_key :id
@@ -51,36 +84,6 @@ defmodule Tunez.Music.Artist do
     has_many :albums, Tunez.Music.Album do
       public? true
       sort year_released: :desc
-    end
-  end
-
-  actions do
-    create :create do
-      accept [:name, :biography]
-    end
-
-    read :read do
-      primary? true
-    end
-
-    update :update do
-      require_atomic? false
-      accept [:name, :biography]
-
-      change Tunez.Music.Changes.UpdatePreviousNames, where: [changing(:name)]
-    end
-
-    destroy :destroy do
-    end
-
-    read :search do
-      argument :query, :ci_string do
-        constraints allow_empty?: true
-        default ""
-      end
-
-      filter expr(contains(name, ^arg(:query)))
-      pagination offset?: true, default_limit: 8
     end
   end
 

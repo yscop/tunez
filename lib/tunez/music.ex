@@ -1,7 +1,7 @@
 defmodule Tunez.Music do
   use Ash.Domain,
     otp_app: :tunez,
-    extensions: [AshJsonApi.Domain, AshPhoenix]
+    extensions: [AshGraphql.Domain, AshJsonApi.Domain, AshPhoenix]
 
   json_api do
     routes do
@@ -13,7 +13,8 @@ defmodule Tunez.Music do
         delete :destroy
         related :albums, :read, primary?: true
       end
-      base_route"/albums", Tunez.Music.Album do
+
+      base_route "/albums", Tunez.Music.Album do
         post :create
         patch :update
         delete :destroy
