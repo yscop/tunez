@@ -51,13 +51,17 @@ defmodule Tunez.Music.Album do
 
     attribute :name, :string do
       allow_nil? false
+      public? true
     end
 
     attribute :year_released, :integer do
       allow_nil? false
+      public? true
     end
 
-    attribute :cover_image_url, :string
+    attribute :cover_image_url, :string do
+      public? true
+    end
     create_timestamp :inserted_at
     update_timestamp :updated_at
   end
@@ -65,6 +69,7 @@ defmodule Tunez.Music.Album do
   relationships do
     belongs_to :artist, Tunez.Music.Artist do
       allow_nil? false
+      public? true
     end
   end
 
@@ -84,4 +89,6 @@ defmodule Tunez.Music.Album do
     identity :unique_album_names_per_artist, [:name, :artist_id],
       message: "already exists for this artist"
   end
+
+
 end
