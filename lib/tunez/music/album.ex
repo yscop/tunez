@@ -28,6 +28,14 @@ defmodule Tunez.Music.Album do
     end
   end
 
+  calculations do
+    calculate :years_ago, :integer, 
+      expr(Date.utc_today().year - year_released)
+
+    calculate :string_years_ago, :string,
+      expr("wow, this was released " <> years_ago <> " years ago!")
+  end
+
   validations do
     validate numericality(:year_released,
       greater_than: 1950,

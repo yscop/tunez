@@ -27,7 +27,8 @@ defmodule TunezWeb.Artists.IndexLive do
     page = 
       Tunez.Music.search_artists!(query_text, 
         page: page_params,
-        query: [sort_input: sort_by]
+        query: [sort_input: sort_by],
+        load: [:album_count, :latest_album_year_released, :cover_image_url]
       )
 
     socket =
@@ -77,7 +78,7 @@ defmodule TunezWeb.Artists.IndexLive do
     ~H"""
     <div id={"artist-#{@artist.id}"} data-role="artist-card" class="relative mb-2">
       <.link navigate={~p"/artists/#{@artist.id}"}>
-        <.cover_image />
+        <.cover_image image={@artist.cover_image_url} />
       </.link>
     </div>
     <p class="flex justify-between">
@@ -89,6 +90,7 @@ defmodule TunezWeb.Artists.IndexLive do
         {@artist.name}
       </.link>
     </p>
+    <.artist_card_album_info artist={@artist} />
     """
   end
 
@@ -123,9 +125,9 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def pagination_links(assigns) do
     ~H"""
-    :if={AshPhoenix.LiveView.prev_page?(@page) || 
+      <div :if={AshPhoenix.LiveView.prev_page?(@page) || 
       AshPhoenix.LiveView.next_page?(@page)}
-    <div class="flex justify-center pt-8 space-x-4">
+      class="flex justify-center pt-8 space-x-4">
       <.button_link data-role="previous-page" kind="primary" inverse
         patch={~p"/?#{query_string(@page, @query_text, @sort_by, "prev")}"}
         disabled={!AshPhoenix.LiveView.prev_page?(@page)}
@@ -185,7 +187,9 @@ defmodule TunezWeb.Artists.IndexLive do
     [
       {"recently updated", "-updated_at"},
       {"recently added", "-inserted_at"},
-      {"name", "name"}
+      {"name", "name"},
+      {"number of albums","-album_count"},
+      {"latest album release", "--latest_album_year_released"}
     ]
   end
 
