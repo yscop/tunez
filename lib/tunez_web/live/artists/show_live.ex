@@ -8,21 +8,20 @@ defmodule TunezWeb.Artists.ShowLive do
   end
 
   def handle_params(%{"id" => artist_id}, _url, socket) do
-
-    artist = Tunez.Music.get_artist_by_id!(artist_id)
-    albums = [
-      %{
-        id: "test-album-1",
-        name: "Test Album",
-        year_released: 2023,
-        cover_image_url: nil
-      }
-    ]
+    artist = Tunez.Music.get_artist_by_id!(artist_id, load: [:albums])
+    # albums = [
+    #   %{
+    #     id: "test-album-1",
+    #     name: "Test Album",
+    #     year_released: 2023,
+    #     cover_image_url: nil
+    #   }
+    # ]
 
     socket =
       socket
       |> assign(:artist, artist)
-      |> assign(:albums, albums)
+
       |> assign(:page_title, artist.name)
 
     {:noreply, socket}
@@ -35,6 +34,9 @@ defmodule TunezWeb.Artists.ShowLive do
         <.h1>
           {@artist.name}
         </.h1>
+        <:subtitle :if={@artist.previous_names != []}>
+          formerly known as: {Enum.join(@artist.previous_names, ", ")}
+        </:subtitle>
         <:action>
           <.button_link
             kind="error"
@@ -58,7 +60,7 @@ defmodule TunezWeb.Artists.ShowLive do
       </.button_link>
 
       <ul class="mt-10 space-y-6 md:space-y-10">
-        <li :for={album <- @albums}>
+        <li :for={album <- @artist.albums}>
           <.album_details album={album} />
         </li>
       </ul>
