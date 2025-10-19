@@ -18,6 +18,39 @@ defmodule Tunez.Music.Artist do
     end
   end
 
+
+  attributes do
+    uuid_primary_key :id
+
+    attribute :name, :string do
+      public? true
+      allow_nil? false
+    end
+
+    attribute :biography, :string do
+      public? true
+    end
+
+    attribute :previous_names, {:array, :string} do
+      default []
+      public? true
+    end
+
+    create_timestamp :inserted_at do
+      public? true
+    end
+
+    update_timestamp :updated_at do
+      public? true
+    end
+  end
+
+  relationships do
+    has_many :albums, Tunez.Music.Album do
+      sort year_released: :desc
+    end
+  end
+
   actions do
     create :create do
       accept [:name, :biography]
@@ -45,37 +78,6 @@ defmodule Tunez.Music.Artist do
 
       filter expr(contains(name, ^arg(:query)))
       pagination offset?: true, default_limit: 8
-    end
-  end
-
-  attributes do
-    uuid_primary_key :id
-
-    attribute :name, :string do
-      public? true
-      allow_nil? false
-    end
-
-    attribute :biography, :string do
-      public? true
-    end
-
-    attribute :previous_names, {:array, :string} do
-      default []
-    end
-
-    create_timestamp :inserted_at do
-      public? true
-    end
-
-    update_timestamp :updated_at do
-      public? true
-    end
-  end
-
-  relationships do
-    has_many :albums, Tunez.Music.Album do
-      sort year_released: :desc
     end
   end
 
