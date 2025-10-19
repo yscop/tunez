@@ -24,8 +24,12 @@ defmodule Tunez.Music.Artist do
       default []
     end
 
-    create_timestamp :inserted_at
-    update_timestamp :updated_at
+    create_timestamp :inserted_at do
+      public? true
+    end
+    update_timestamp :updated_at do
+      public? true
+    end
   end
 
   relationships do
