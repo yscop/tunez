@@ -6,7 +6,7 @@ defmodule TunezWeb.AuthOverrides do
     set :image_url, nil
     set :dark_image_url, nil
     set :text_class, "text-8xl text-accent-400"
-    set :text, "♫ 🌷"
+    set :text, "♫"
   end
 
   override Components.Password do
